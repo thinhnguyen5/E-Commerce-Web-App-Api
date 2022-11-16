@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 
 //Connect to DB
 mongoose.connect(
-    process.env.DB_CONNECTION,
+    process.env.MONGODB_URL,
     { useNewUrlParser: true },
     () => console.log('Connecting to DB')
 );
