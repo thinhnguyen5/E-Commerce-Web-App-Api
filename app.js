@@ -13,11 +13,15 @@ app.use(bodyParser.json());
 
 //Import ROUTES
 const productsRoute = require('./routes/products');
+const authRoute = require('./routes/auth');
+const userRoute = require('./routes/user');
 
 app.use('/products', productsRoute);
+app.use("/auth", authRoute)
+app.use("/user", userRoute);
 
 app.get('/', (req, res) => {
-    res.send("Hello, this is my thesis project BE")
+    res.send("E-Commerce API - Thesis Project - DIN19SP")
 })
 
 //Connect to DB
