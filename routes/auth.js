@@ -40,29 +40,25 @@ router.post('/register', async (req, res) => {
         }
     });
 
-//LOGIN
-router.post('/login', async (req, res) => {
-    //LETS VALIDATE THE DATA BEFORE LOGIN
-    const{ error } = loginValidation(req.body);
-    if (error)  return res.status(400).send(error.details[0].message);
-    
-    //Checking if the user is already in the database
-    const user = await User.findOne({username: req.body.username});
-    if(!user) return res.status(400).send('username is not valid');
-    
-    //PASSWORD IS CORRECT
-    const validPass = await bcrypt.compare(req.body.passwordHash, user.passwordHash);
-    if(!validPass) return res.status(400).send('Invalid password');
 
-    //Create and assign a token 
-    const accessToken = jwt.sign({userId: user._id}, process.env.SECRET, {
-        expiresIn: '1d'
+//LOGIN
+router.post("/login", async (req, res) => {
+  const { username, passwordHash } = req.body;
+
+  const user = await User.findOne({ username });
+    if (!user) {
+      return res.json({ error: "User Not found" });
+    }
+    if (await bcrypt.compare(passwordHash, user.passwordHash)) {
+      const accessToken = jwt.sign({ username: user.username }, process.env.SECRET);
+
+      if (res.status(201)) {
+        return res.json({ status: "ok", data: accessToken });
+      } else {
+        return res.json({ error: "error" });
+      }
+    }
+    res.json({ status: "error", error: "InvAlid Password" });
     });
-    await User.findByIdAndUpdate(user._id, {accessToken})
-    res.status(200).json({
-        user: {username: user.username},
-        accessToken
-    });    
-});
 
 module.exports = router;
