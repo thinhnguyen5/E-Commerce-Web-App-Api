@@ -66,11 +66,15 @@ router.post("/userData", async(req, res) => {
   const {accessToken} = req.body;
   try {
     const user = jwt.verify(accessToken, process.env.SECRET);
+    console.log(user);
+
     const username = user.username;
-    User.findOne({ username: username }).then((data) => {
-      res.send({ status: "Ok", data: data });
-    }).catch((error) => {
-      res.send({ status: "Error", data: error });
+    User.findOne({ username: username })
+      .then((data) => {
+        res.send({ status: "ok", data: data });
+      })
+      .catch((error) => {
+      res.send({ status: "error", data: error });
     });
   } catch (error) {}
 })
