@@ -61,4 +61,18 @@ router.post("/login", async (req, res) => {
     res.json({ status: "error", error: "InvAlid Password" });
     });
 
+//USER DATA
+router.post("/userData", async(req, res) => {
+  const {accessToken} = req.body;
+  try {
+    const user = jwt.verify(accessToken, process.env.SECRET);
+    const username = user.username;
+    User.findOne({ username: username }).then((data) => {
+      res.send({ status: "Ok", data: data });
+    }).catch((error) => {
+      res.send({ status: "Error", data: error });
+    });
+  } catch (error) {}
+})
+
 module.exports = router;
